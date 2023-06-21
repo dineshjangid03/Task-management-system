@@ -3,13 +3,11 @@ package com.musterdekho.exception;
 public class UserNotFoundException extends Exception{
 
 	public UserNotFoundException() {
-		super();
-		// TODO Auto-generated constructor stub
+		super("No User Found");
 	}
 
-	public UserNotFoundException(String message) {
-		super(message);
-		// TODO Auto-generated constructor stub
+	public UserNotFoundException(Long id) {
+		super("User Not Found With Id "+id);
 	}
 	
 	

@@ -3,13 +3,11 @@ package com.musterdekho.exception;
 public class TaskNotFoundException extends Exception{
 
 	public TaskNotFoundException() {
-		super();
-		// TODO Auto-generated constructor stub
+		super("No Task Found");
 	}
 
-	public TaskNotFoundException(String message) {
-		super(message);
-		// TODO Auto-generated constructor stub
+	public TaskNotFoundException(Long id) {
+		super("Task Not Found With Id "+id);
 	}
 	
 	

@@ -10,6 +10,9 @@ import javax.security.auth.login.LoginException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.musterdekho.dto.UserDTO;
+import com.musterdekho.exception.UserException;
+import com.musterdekho.exception.UserNotFoundException;
 import com.musterdekho.model.CurrentUserSession;
 import com.musterdekho.model.LoginDTO;
 import com.musterdekho.model.User;
@@ -27,9 +30,27 @@ public class UserServiceImpl implements UserService{
 	
 	
 	@Override
-	public User addUser(User user) {
+	public UserDTO addUser(User user) throws UserException {
+		
+		List<User> list = userRepo.findByUsername(user.getUsername());
+		
+		if(!list.isEmpty())
+			throw new UserException("Username \""+user.getUsername()+"\" is already registered");
+		
 		user.setTasks(new ArrayList<>());
-		return userRepo.save(user);
+		
+		User saved = userRepo.save(user);
+		
+		UserDTO dto = new UserDTO();
+		
+		dto.setId(saved.getId());
+		dto.setMobile(saved.getMobile());
+		dto.setName(saved.getName());
+		dto.setTasks(saved.getTasks());
+		dto.setUsername(saved.getUsername());
+		
+		return dto;
+		
 	}
 	
 	@Override
@@ -71,6 +92,24 @@ public class UserServiceImpl implements UserService{
 		}
 		currentUserRepo.delete(validation.get(0));
 		return "Logged out !";
+	}
+
+	@Override
+	public UserDTO getUserById(Long userId) throws UserNotFoundException {
+		
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException(userId));
+		
+		UserDTO dto = new UserDTO();
+		
+		dto.setId(user.getId());
+		dto.setMobile(user.getMobile());
+		dto.setName(user.getName());
+		dto.setTasks(user.getTasks());
+		dto.setUsername(user.getUsername());
+		
+		return dto;
+		
 	}
 
 	
