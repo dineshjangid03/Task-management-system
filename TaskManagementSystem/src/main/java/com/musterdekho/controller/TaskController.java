@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musterdekho.dto.TaskDTO;
 import com.musterdekho.exception.TaskNotFoundException;
 import com.musterdekho.exception.UserNotFoundException;
 import com.musterdekho.model.Task;
@@ -30,23 +31,23 @@ public class TaskController {
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<Task> createTask(@PathVariable Long userId, @RequestBody Task task) throws UserNotFoundException {
-        return new ResponseEntity<Task>(taskService.createTask(userId, task), HttpStatus.OK);
+    public ResponseEntity<TaskDTO> createTask(@PathVariable Long userId, @RequestBody Task task) throws UserNotFoundException {
+        return new ResponseEntity<TaskDTO>(taskService.createTask(userId, task), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<Task> updateTask(@RequestBody Task updatedTask) throws TaskNotFoundException {
-    	return new ResponseEntity<Task>(taskService.updateTask(updatedTask), HttpStatus.OK);
+    public ResponseEntity<TaskDTO> updateTask(@RequestBody Task updatedTask) throws TaskNotFoundException {
+    	return new ResponseEntity<TaskDTO>(taskService.updateTask(updatedTask), HttpStatus.OK);
     }
     
     @PutMapping("/{taskId}/{userId}")
-    public ResponseEntity<Task> assignTaskToAnotherUser(@PathVariable Long taskId, @PathVariable Long userId) throws TaskNotFoundException, UserNotFoundException {
-    	return new ResponseEntity<Task>(taskService.assignTaskToAnotherUser(taskId, userId), HttpStatus.OK);
+    public ResponseEntity<TaskDTO> assignTaskToAnotherUser(@PathVariable Long taskId, @PathVariable Long userId) throws TaskNotFoundException, UserNotFoundException {
+    	return new ResponseEntity<TaskDTO>(taskService.assignTaskToAnotherUser(taskId, userId), HttpStatus.OK);
     }
 
     @PutMapping("/complete/{taskId}")
-    public ResponseEntity<Task> markTaskComplete(@PathVariable Long taskId) throws TaskNotFoundException {
-    	return new ResponseEntity<Task>(taskService.markTaskComplete(taskId), HttpStatus.OK);
+    public ResponseEntity<TaskDTO> markTaskComplete(@PathVariable Long taskId) throws TaskNotFoundException {
+    	return new ResponseEntity<TaskDTO>(taskService.markTaskComplete(taskId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{taskId}")
@@ -55,8 +56,8 @@ public class TaskController {
     }
     
     @GetMapping("/{taskId}")
-    public ResponseEntity<Task> getTask(@PathVariable Long taskId) throws TaskNotFoundException {
-        return new ResponseEntity<Task>(taskService.getTaskById(taskId),HttpStatus.OK);
+    public ResponseEntity<TaskDTO> getTask(@PathVariable Long taskId) throws TaskNotFoundException {
+        return new ResponseEntity<TaskDTO>(taskService.getTaskById(taskId),HttpStatus.OK);
     }
 
 }
