@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.musterdekho.dto.TaskDTO;
+import com.musterdekho.exception.TaskException;
 import com.musterdekho.exception.TaskNotFoundException;
 import com.musterdekho.exception.UserNotFoundException;
+import com.musterdekho.exception.UserNotLoggedInException;
 import com.musterdekho.model.Task;
 import com.musterdekho.service.TaskService;
 
@@ -30,29 +32,29 @@ public class TaskController {
         return new ResponseEntity<String>("Welcome",HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<TaskDTO> createTask(@PathVariable Long userId, @RequestBody Task task) throws UserNotFoundException {
-        return new ResponseEntity<TaskDTO>(taskService.createTask(userId, task), HttpStatus.OK);
+    @PostMapping("/{token}")
+    public ResponseEntity<TaskDTO> createTask(@PathVariable String token, @RequestBody Task task) throws UserNotFoundException, UserNotLoggedInException {
+        return new ResponseEntity<TaskDTO>(taskService.createTask(token, task), HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<TaskDTO> updateTask(@RequestBody Task updatedTask) throws TaskNotFoundException {
-    	return new ResponseEntity<TaskDTO>(taskService.updateTask(updatedTask), HttpStatus.OK);
+    @PutMapping("/{token}")
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable String token, @RequestBody Task updatedTask) throws TaskNotFoundException, UserNotLoggedInException, TaskException {
+    	return new ResponseEntity<TaskDTO>(taskService.updateTask(token, updatedTask), HttpStatus.OK);
     }
     
-    @PutMapping("/{taskId}/{userId}")
-    public ResponseEntity<TaskDTO> assignTaskToAnotherUser(@PathVariable Long taskId, @PathVariable Long userId) throws TaskNotFoundException, UserNotFoundException {
-    	return new ResponseEntity<TaskDTO>(taskService.assignTaskToAnotherUser(taskId, userId), HttpStatus.OK);
+    @PutMapping("/{token}/{taskId}/{userId}")
+    public ResponseEntity<TaskDTO> assignTaskToAnotherUser(@PathVariable String token, @PathVariable Long taskId, @PathVariable Long userId) throws TaskNotFoundException, UserNotFoundException, UserNotLoggedInException, TaskException {
+    	return new ResponseEntity<TaskDTO>(taskService.assignTaskToAnotherUser(token, taskId, userId), HttpStatus.OK);
     }
 
-    @PutMapping("/complete/{taskId}")
-    public ResponseEntity<TaskDTO> markTaskComplete(@PathVariable Long taskId) throws TaskNotFoundException {
-    	return new ResponseEntity<TaskDTO>(taskService.markTaskComplete(taskId), HttpStatus.OK);
+    @PutMapping("/complete/{token}/{taskId}")
+    public ResponseEntity<TaskDTO> markTaskComplete(@PathVariable String token, @PathVariable Long taskId) throws TaskNotFoundException, UserNotLoggedInException, TaskException {
+    	return new ResponseEntity<TaskDTO>(taskService.markTaskComplete(token, taskId), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{taskId}")
-    public ResponseEntity<Task> deleteTask(@PathVariable Long taskId) throws TaskNotFoundException {
-    	return new ResponseEntity<Task>(taskService.deleteTask(taskId), HttpStatus.OK);
+    @DeleteMapping("/{token}/{taskId}")
+    public ResponseEntity<Task> deleteTask(@PathVariable String token, @PathVariable Long taskId) throws TaskNotFoundException, UserNotLoggedInException, TaskException {
+    	return new ResponseEntity<Task>(taskService.deleteTask(token, taskId), HttpStatus.OK);
     }
     
     @GetMapping("/{taskId}")

@@ -1,13 +1,19 @@
 package com.musterdekho.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.musterdekho.dto.TaskDTO;
+import com.musterdekho.exception.TaskException;
 import com.musterdekho.exception.TaskNotFoundException;
 import com.musterdekho.exception.UserNotFoundException;
+import com.musterdekho.exception.UserNotLoggedInException;
+import com.musterdekho.model.CurrentUserSession;
 import com.musterdekho.model.Task;
 import com.musterdekho.model.User;
+import com.musterdekho.repository.CurrentUserSessionRepo;
 import com.musterdekho.repository.TaskRepository;
 import com.musterdekho.repository.UserRepository;
 
@@ -19,12 +25,23 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private CurrentUserSessionRepo currentUserRepo;
 
 	@Override
-	public TaskDTO createTask(Long userId, Task task) throws UserNotFoundException {
+	public TaskDTO createTask(String token, Task task) throws UserNotFoundException, UserNotLoggedInException {
 		
-		User user = userRepo.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException(userId));
+		List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
+		
+		User user = userRepo.findById(loggedInUser.getUserId())
+				.orElseThrow(() -> new UserNotFoundException(loggedInUser.getUserId()));
 		
 		task.setAssignedUser(user);
 		
@@ -37,10 +54,21 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override
-	public TaskDTO updateTask(Task updatedTask) throws TaskNotFoundException {
+	public TaskDTO updateTask(String token, Task updatedTask) throws TaskNotFoundException, UserNotLoggedInException, TaskException {
+		
+		List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
 		
 		Task savedTask = taskRepo.findById(updatedTask.getId())
 				.orElseThrow(() -> new TaskNotFoundException(updatedTask.getId()));
+		
+		if(savedTask.getAssignedUser().getId() != loggedInUser.getUserId())
+			throw new TaskException("This is not your task! you canno't update it");
 		
 		if(updatedTask.getDescription()!=null)
 			savedTask.setDescription(updatedTask.getDescription());
@@ -60,10 +88,24 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override
-	public TaskDTO assignTaskToAnotherUser(Long taskId, Long userId) throws TaskNotFoundException, UserNotFoundException {
+	public TaskDTO assignTaskToAnotherUser(String token, Long taskId, Long userId) 
+			throws TaskNotFoundException, UserNotFoundException, 
+			UserNotLoggedInException, TaskException {
 
+		List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
+		
 		Task task = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
+		
+		if(task.getAssignedUser().getId() != loggedInUser.getUserId())
+			throw new TaskException("This is not your task! you canno't update it");
+		
 		
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException(userId));
@@ -79,10 +121,21 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override
-	public TaskDTO markTaskComplete(Long taskId) throws TaskNotFoundException {
+	public TaskDTO markTaskComplete(String token, Long taskId) throws TaskNotFoundException, UserNotLoggedInException, TaskException {
+		
+		List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
 		
 		Task task = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
+		
+		if(task.getAssignedUser().getId() != loggedInUser.getUserId())
+			throw new TaskException("This is not your task! you canno't update it");
 		
 		if(task.isCompleted())
 			task.setCompleted(false);
@@ -98,10 +151,22 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override
-	public Task deleteTask(Long taskId) throws TaskNotFoundException {
+	public Task deleteTask(String token, Long taskId) throws TaskNotFoundException, UserNotLoggedInException, TaskException {
 
+		List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
+		
 		Task task = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
+		
+		if(task.getAssignedUser().getId() != loggedInUser.getUserId())
+			throw new TaskException("This is not your task! you canno't update it");
+		
 		
 		taskRepo.delete(task);
 		
