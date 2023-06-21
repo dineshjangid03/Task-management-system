@@ -1,23 +1,9 @@
-package com.musterdekho.model;
+package com.musterdekho.dto;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "tasks")
-public class Task {
+public class TaskDTO {
 	
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String title;
@@ -27,11 +13,10 @@ public class Task {
     private LocalDate dueDate;
 
     private boolean completed;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "assigned_user_id")
-    private User assignedUser;
+    
+    private Long userId;
+    
+    private String name;
 
 	public Long getId() {
 		return id;
@@ -73,12 +58,22 @@ public class Task {
 		this.completed = completed;
 	}
 
-	public User getAssignedUser() {
-		return assignedUser;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setAssignedUser(User assignedUser) {
-		this.assignedUser = assignedUser;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+    
+    
 
 }

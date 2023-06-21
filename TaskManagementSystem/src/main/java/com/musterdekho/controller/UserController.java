@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musterdekho.dto.UserDTO;
+import com.musterdekho.exception.UserException;
+import com.musterdekho.exception.UserNotFoundException;
 import com.musterdekho.model.CurrentUserSession;
 import com.musterdekho.model.LoginDTO;
 import com.musterdekho.model.User;
@@ -30,8 +33,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        return new ResponseEntity<User>(userService.addUser(user),HttpStatus.OK);
+    public ResponseEntity<UserDTO> registerUser(@RequestBody User user) throws UserException {
+        return new ResponseEntity<UserDTO>(userService.addUser(user),HttpStatus.OK);
     }
 
     @PostMapping("/login")
@@ -42,6 +45,11 @@ public class UserController {
     @PostMapping("/logout/{token}")
     public ResponseEntity<String> logoutUser(@PathVariable("token") String token) throws LoginException {
         return new ResponseEntity<String>(userService.logOutFromAccount(token),HttpStatus.OK);
+    }
+    
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long userId) throws UserNotFoundException {
+        return new ResponseEntity<UserDTO>(userService.getUserById(userId),HttpStatus.OK);
     }
     
 }

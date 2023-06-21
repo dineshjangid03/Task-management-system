@@ -23,18 +23,19 @@ public class TaskServiceImpl implements TaskService{
 	public Task createTask(Long userId, Task task) throws UserNotFoundException {
 		
 		User user = userRepo.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException("user not found with id "+userId));
+				.orElseThrow(() -> new UserNotFoundException(userId));
 		
 		task.setAssignedUser(user);
 		
 		return taskRepo.save(task);
+		
 	}
 
 	@Override
 	public Task updateTask(Task updatedTask) throws TaskNotFoundException {
 		
 		Task savedTask = taskRepo.findById(updatedTask.getId())
-				.orElseThrow(() -> new TaskNotFoundException("task not found with id "+updatedTask.getId()));
+				.orElseThrow(() -> new TaskNotFoundException(updatedTask.getId()));
 		
 		if(updatedTask.getDescription()!=null)
 			savedTask.setDescription(updatedTask.getDescription());
@@ -53,21 +54,22 @@ public class TaskServiceImpl implements TaskService{
 	public Task assignTaskToAnotherUser(Long taskId, Long userId) throws TaskNotFoundException, UserNotFoundException {
 
 		Task task = taskRepo.findById(taskId)
-				.orElseThrow(() -> new TaskNotFoundException("task not found with id "+taskId));
+				.orElseThrow(() -> new TaskNotFoundException(taskId));
 		
 		User user = userRepo.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException("user not found with id "+userId));
+				.orElseThrow(() -> new UserNotFoundException(userId));
 		
 		task.setAssignedUser(user);
 		
 		return taskRepo.save(task);
+		
 	}
 
 	@Override
 	public Task markTaskComplete(Long taskId) throws TaskNotFoundException {
 		
 		Task task = taskRepo.findById(taskId)
-				.orElseThrow(() -> new TaskNotFoundException("task not found with id "+taskId));
+				.orElseThrow(() -> new TaskNotFoundException(taskId));
 		
 		if(task.isCompleted())
 			task.setCompleted(false);
@@ -82,13 +84,19 @@ public class TaskServiceImpl implements TaskService{
 	public Task deleteTask(Long taskId) throws TaskNotFoundException {
 
 		Task task = taskRepo.findById(taskId)
-				.orElseThrow(() -> new TaskNotFoundException("task not found with id "+taskId));
+				.orElseThrow(() -> new TaskNotFoundException(taskId));
 		
 		taskRepo.delete(task);
 		
 		return task;
 	}
 
-	
+	@Override
+	public Task getTaskById(Long taskId) throws TaskNotFoundException {
+		
+		return taskRepo.findById(taskId)
+				.orElseThrow(() -> new TaskNotFoundException(taskId));
+		
+	}
 
 }

@@ -53,5 +53,10 @@ public class TaskController {
     public ResponseEntity<Task> deleteTask(@PathVariable Long taskId) throws TaskNotFoundException {
     	return new ResponseEntity<Task>(taskService.deleteTask(taskId), HttpStatus.OK);
     }
+    
+    @GetMapping("/{taskId}")
+    public ResponseEntity<Task> getTask(@PathVariable Long taskId) throws TaskNotFoundException {
+        return new ResponseEntity<Task>(taskService.getTaskById(taskId),HttpStatus.OK);
+    }
 
 }
