@@ -1,21 +1,22 @@
 package com.musterdekho.service;
 
+import com.musterdekho.dto.TaskDTO;
 import com.musterdekho.exception.TaskNotFoundException;
 import com.musterdekho.exception.UserNotFoundException;
 import com.musterdekho.model.Task;
 
 public interface TaskService {
 
-    public Task createTask(Long userId, Task task) throws UserNotFoundException;
+    public TaskDTO createTask(Long userId, Task task) throws UserNotFoundException;
 
-    public Task updateTask(Task updatedTask) throws TaskNotFoundException;
+    public TaskDTO updateTask(Task updatedTask) throws TaskNotFoundException;
     
-    public Task assignTaskToAnotherUser(Long taskId, Long userId) throws TaskNotFoundException, UserNotFoundException;
+    public TaskDTO assignTaskToAnotherUser(Long taskId, Long userId) throws TaskNotFoundException, UserNotFoundException;
 
-    public Task markTaskComplete(Long taskId) throws TaskNotFoundException ;
+    public TaskDTO markTaskComplete(Long taskId) throws TaskNotFoundException ;
 
     public Task deleteTask(Long taskId) throws TaskNotFoundException ;
  
-    public Task getTaskById(Long taskId) throws TaskNotFoundException ;
+    public TaskDTO getTaskById(Long taskId) throws TaskNotFoundException ;
     
 }

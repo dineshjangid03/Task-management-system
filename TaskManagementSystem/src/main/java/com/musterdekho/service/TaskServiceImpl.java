@@ -3,6 +3,7 @@ package com.musterdekho.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.musterdekho.dto.TaskDTO;
 import com.musterdekho.exception.TaskNotFoundException;
 import com.musterdekho.exception.UserNotFoundException;
 import com.musterdekho.model.Task;
@@ -20,19 +21,23 @@ public class TaskServiceImpl implements TaskService{
 	private UserRepository userRepo;
 
 	@Override
-	public Task createTask(Long userId, Task task) throws UserNotFoundException {
+	public TaskDTO createTask(Long userId, Task task) throws UserNotFoundException {
 		
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException(userId));
 		
 		task.setAssignedUser(user);
 		
-		return taskRepo.save(task);
+		Task saved = taskRepo.save(task);
+		
+		TaskDTO dto = convertToTaskDTO(saved);
+		
+		return dto;
 		
 	}
 
 	@Override
-	public Task updateTask(Task updatedTask) throws TaskNotFoundException {
+	public TaskDTO updateTask(Task updatedTask) throws TaskNotFoundException {
 		
 		Task savedTask = taskRepo.findById(updatedTask.getId())
 				.orElseThrow(() -> new TaskNotFoundException(updatedTask.getId()));
@@ -46,12 +51,16 @@ public class TaskServiceImpl implements TaskService{
 		if(updatedTask.getDueDate()!=null)
 			savedTask.setDueDate(updatedTask.getDueDate());
 		
-		return taskRepo.save(savedTask);
+		Task saved = taskRepo.save(savedTask);
+		
+		TaskDTO dto = convertToTaskDTO(saved);
+		
+		return dto;
 		
 	}
 
 	@Override
-	public Task assignTaskToAnotherUser(Long taskId, Long userId) throws TaskNotFoundException, UserNotFoundException {
+	public TaskDTO assignTaskToAnotherUser(Long taskId, Long userId) throws TaskNotFoundException, UserNotFoundException {
 
 		Task task = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
@@ -61,12 +70,16 @@ public class TaskServiceImpl implements TaskService{
 		
 		task.setAssignedUser(user);
 		
-		return taskRepo.save(task);
+		Task saved = taskRepo.save(task);
+		
+		TaskDTO dto = convertToTaskDTO(saved);
+		
+		return dto;
 		
 	}
 
 	@Override
-	public Task markTaskComplete(Long taskId) throws TaskNotFoundException {
+	public TaskDTO markTaskComplete(Long taskId) throws TaskNotFoundException {
 		
 		Task task = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
@@ -76,7 +89,11 @@ public class TaskServiceImpl implements TaskService{
 		else 
 			task.setCompleted(true);
 		
-		return taskRepo.save(task);
+		Task saved = taskRepo.save(task);
+		
+		TaskDTO dto = convertToTaskDTO(saved);
+		
+		return dto;
 		
 	}
 
@@ -92,10 +109,30 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override
-	public Task getTaskById(Long taskId) throws TaskNotFoundException {
+	public TaskDTO getTaskById(Long taskId) throws TaskNotFoundException {
 		
-		return taskRepo.findById(taskId)
+		Task saved = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
+		
+		TaskDTO dto = convertToTaskDTO(saved);
+		
+		return dto;
+		
+	}
+	
+	private TaskDTO convertToTaskDTO(Task task) {
+		
+		TaskDTO dto = new TaskDTO();
+		
+		dto.setCompleted(task.isCompleted());
+		dto.setDescription(task.getDescription());
+		dto.setDueDate(task.getDueDate());
+		dto.setId(task.getId());
+		dto.setTitle(task.getTitle());
+		dto.setName(task.getAssignedUser().getName());
+		dto.setUserId(task.getAssignedUser().getId());
+		
+		return dto;
 		
 	}
 
