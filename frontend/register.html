@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Registration</h2>
+        <h2 class="text-center mb-4">Registration</h2>
         <form id="registrationForm">
         <div class="form-group">
             <label for="name">Name:</label>
@@ -33,7 +33,12 @@
             <label for="password">Password:</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <div class="d-flex">
+            <button type="submit" class="btn btn-primary">Register</button>
+            <p class="ml-5">Already have account? <a href="login.html">Login</a></p>
+        </div>
+        
+        
         </form>
     </div>
 
