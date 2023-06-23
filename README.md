@@ -81,6 +81,10 @@ This is a Task Management System application. It provides the functionality to r
             "password":"1234"
         }
         ```
+
+
+        <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/register.png"/>
+        
         
     -  Log in to a user account:
       
@@ -96,6 +100,9 @@ This is a Task Management System application. It provides the functionality to r
               "password":"1234"
           }
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/login.png"/>
+          
     -  Log out from a user account:
         - Request: POST /api/users/logout/{token}
           ```html
@@ -120,6 +127,9 @@ This is a Task Management System application. It provides the functionality to r
               "completed":"false"
           }
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/createtask.png"/>
+          
     - Update an existing task:
         - Request: PUT /api/tasks/{token}
           ```html
@@ -133,21 +143,36 @@ This is a Task Management System application. It provides the functionality to r
               "dueDate":"2023-07-10",
           }
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/update.png"/>
+
+          
     - Assign a task to another user:
         - Request: PUT /api/tasks/{token}/{taskId}/{userId}
           ```html
           http://localhost:8080/api/tasks/${token}/${taskId}/${userId}
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/assign.png"/>
+
+          
     - Mark a task as complete:
         - Request: PUT /api/tasks/complete/{token}/{taskId}
           ```html
           http://localhost:8080/api/tasks/complete/${token}/${taskId}
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/markcomp.png"/>
+
+          
     - Delete a task:
         - Request: DELETE /api/tasks/{token}/{taskId}
           ```html
           http://localhost:8080/api/tasks/${token}/${taskId}
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/delete.png"/>
+          
 
   - Search and Filter Endpoints:
 
@@ -156,18 +181,33 @@ This is a Task Management System application. It provides the functionality to r
           ```html
           http://localhost:8080/api/search/title/${token}/${title}
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/searchtitle.png"/>
+
+          
     - Search for tasks by description:
       - Request: GET /api/search/desc/{token}/{desc}
           ```html
           http://localhost:8080/api/search/desc/${token}/${description}
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/searchdesc.png"/>
+
+
     - Filter tasks by completion status:
       - Request: GET /api/filter/completionstatus/{token}/{completedStatus}
           ```html
           http://localhost:8080/api/filter/completionstatus/${token}/${completedStatus}
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/comp1.png"/>
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/comp2.png"/>
+
+
     - Filter tasks by due date:
       - Request: GET /api/filter/duedate/{token}/{dueDate}
           ```html
           http://localhost:8080/api/filter/duedate/${token}/${dueDate}
           ```
+
+          <img src="https://github.com/dineshjangid03/Task-management-system/blob/main/photos/filterdate.png"/>
