@@ -103,7 +103,7 @@ public class TaskServiceImpl implements TaskService{
 		Task task = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
 		
-		if(task.getAssignedUser().getId() != loggedInUser.getUserId())
+		if(task.getAssignedUser().getId()+1 != loggedInUser.getUserId()+1)
 			throw new TaskException("This is not your task! you canno't update it");
 		
 		
@@ -134,7 +134,7 @@ public class TaskServiceImpl implements TaskService{
 		Task task = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
 		
-		if(task.getAssignedUser().getId() != loggedInUser.getUserId())
+		if(task.getAssignedUser().getId()+1 != loggedInUser.getUserId()+1)
 			throw new TaskException("This is not your task! you canno't update it");
 		
 		if(task.isCompleted())
@@ -164,7 +164,7 @@ public class TaskServiceImpl implements TaskService{
 		Task task = taskRepo.findById(taskId)
 				.orElseThrow(() -> new TaskNotFoundException(taskId));
 		
-		if(task.getAssignedUser().getId() != loggedInUser.getUserId())
+		if(task.getAssignedUser().getId()+1 != loggedInUser.getUserId()+1)
 			throw new TaskException("This is not your task! you canno't update it");
 		
 		
