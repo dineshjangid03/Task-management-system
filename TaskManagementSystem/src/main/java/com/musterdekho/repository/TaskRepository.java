@@ -8,8 +8,8 @@ import com.musterdekho.model.Task;
 
 public interface TaskRepository extends JpaRepository<Task, Long>{
 	
-	List<Task> findByTitleContainingIgnoreCase(String title);
+	List<Task> findByAssignedUserIdAndTitleContainingIgnoreCase(Long id, String title);
 	
-	List<Task> findByDescriptionContainingIgnoreCase(String description);
+	List<Task> findByAssignedUserIdAndDescriptionContainingIgnoreCase(Long id, String description);
 
 }

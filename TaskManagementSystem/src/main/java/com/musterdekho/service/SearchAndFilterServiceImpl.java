@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import com.musterdekho.dto.TaskDTO;
 import com.musterdekho.exception.TaskNotFoundException;
 import com.musterdekho.exception.UserNotFoundException;
+import com.musterdekho.exception.UserNotLoggedInException;
+import com.musterdekho.model.CurrentUserSession;
 import com.musterdekho.model.Task;
 import com.musterdekho.model.User;
+import com.musterdekho.repository.CurrentUserSessionRepo;
 import com.musterdekho.repository.TaskRepository;
 import com.musterdekho.repository.UserRepository;
 
@@ -24,11 +27,22 @@ public class SearchAndFilterServiceImpl implements SearchAndFilterService{
 	
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private CurrentUserSessionRepo currentUserRepo;
 
 	@Override
-	public List<TaskDTO> searchTaskByTitle(String title) throws TaskNotFoundException {
+	public List<TaskDTO> searchTaskByTitle(String token, String title) throws TaskNotFoundException, UserNotLoggedInException {
 		
-		List<Task> tasks = taskRepo.findByTitleContainingIgnoreCase(title);
+		List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
+		
+		List<Task> tasks = taskRepo.findByAssignedUserIdAndTitleContainingIgnoreCase(loggedInUser.getUserId(), title);
 		
 		if(tasks.isEmpty())
 			throw new TaskNotFoundException();
@@ -40,9 +54,17 @@ public class SearchAndFilterServiceImpl implements SearchAndFilterService{
 	}
 
 	@Override
-	public List<TaskDTO> searchTaskByDescription(String description) throws TaskNotFoundException {
+	public List<TaskDTO> searchTaskByDescription(String token, String description) throws TaskNotFoundException, UserNotLoggedInException {
 		
-		List<Task> tasks = taskRepo.findByDescriptionContainingIgnoreCase(description);
+List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
+		
+		List<Task> tasks = taskRepo.findByAssignedUserIdAndDescriptionContainingIgnoreCase(loggedInUser.getUserId(), description);
 		
 		if(tasks.isEmpty())
 			throw new TaskNotFoundException();
@@ -69,9 +91,21 @@ public class SearchAndFilterServiceImpl implements SearchAndFilterService{
 	}
 
 	@Override
-	public List<TaskDTO> filterTaskByCompletionStatus(Boolean completedStatus) throws TaskNotFoundException {
+	public List<TaskDTO> filterTaskByCompletionStatus(String token, Boolean completedStatus) throws TaskNotFoundException, UserNotLoggedInException, UserNotFoundException {
 		
-		List<Task> tasks = taskRepo.findAll();
+		List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
+		
+		User user = userRepo.findById(loggedInUser.getUserId())
+				.orElseThrow(() -> new UserNotFoundException(loggedInUser.getUserId()));
+		
+		
+		List<Task> tasks = user.getTasks();
 		
 		tasks = tasks.stream()
 				.filter( task -> 
@@ -88,9 +122,21 @@ public class SearchAndFilterServiceImpl implements SearchAndFilterService{
 	}
 
 	@Override
-	public List<TaskDTO> filterTaskByDueDate(LocalDate dueDate) throws TaskNotFoundException {
+	public List<TaskDTO> filterTaskByDueDate(String token, LocalDate dueDate) throws TaskNotFoundException, UserNotLoggedInException, UserNotFoundException {
 		
-		List<Task> tasks = taskRepo.findAll();
+		List<CurrentUserSession> validation=currentUserRepo.findByUuid(token);
+		
+		if(validation.size()==0) {
+			throw new UserNotLoggedInException();
+		}
+		
+		CurrentUserSession loggedInUser = validation.get(0);
+		
+		User user = userRepo.findById(loggedInUser.getUserId())
+				.orElseThrow(() -> new UserNotFoundException(loggedInUser.getUserId()));
+		
+		
+		List<Task> tasks = user.getTasks();
 		
 		tasks = tasks.stream()
 				.filter( task -> 
@@ -107,7 +153,7 @@ public class SearchAndFilterServiceImpl implements SearchAndFilterService{
 	}
 
 	@Override
-	public List<TaskDTO> filterTaskByCompletionStatusAndDueDate(Boolean completedStatus, LocalDate dueDate) throws TaskNotFoundException {
+	public List<TaskDTO> filterTaskByCompletionStatusAndDueDate(String token, Boolean completedStatus, LocalDate dueDate) throws TaskNotFoundException {
 
 		List<Task> tasks = taskRepo.findAll();
 		

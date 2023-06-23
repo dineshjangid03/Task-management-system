@@ -5,73 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .container {
-        max-width: 400px;
-        margin: 0 auto;
-        margin-top: 100px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="container">
+
         <h2 class="text-center mb-4">Login</h2>
         <form id="loginForm">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-        </div>
-            
-        <div class="d-flex">
-            <button type="submit" class="btn btn-primary">Login</button>
-            <p class="ml-5">Don't have account? <a href="register.html">Register here</a></p>
-        </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
+            </div>
+                
+            <div class="d-flex">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <p class="ml-5">Don't have account? <a href="register.html">Register here</a></p>
+            </div>
         </form>
+        
     </div>
 
-    <script>
-
-        document.getElementById("loginForm").addEventListener("submit", function(event){
-            fun(event)
-        })
-        async function fun(event) {
-            event.preventDefault();
-
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-
-            var login = {
-                username: username,
-                password: password
-            };
-
-            let res = await fetch("http://localhost:8080/api/users/login", {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json"
-                },
-                body: JSON.stringify(login)
-            })
-            .then(async function(response) {
-                return response.json() 
-            })
-            .catch(function(error) {
-                alert("An error occurred during login");
-                console.error(error);
-            });
-            if(res.message!=null){
-                alert(res.message)
-            }
-            else{
-                localStorage.setItem("user", JSON.stringify(res))
-                window.location.href="index.html"
-            }
-            
-        }
-    </script>
 </body>
 </html>
+<script src="JS/login.js"></script>
