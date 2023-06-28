@@ -20,6 +20,8 @@ import com.musterdekho.exception.UserNotLoggedInException;
 import com.musterdekho.model.Task;
 import com.musterdekho.service.TaskService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -33,12 +35,12 @@ public class TaskController {
     }
 
     @PostMapping("/{token}")
-    public ResponseEntity<TaskDTO> createTask(@PathVariable String token, @RequestBody Task task) throws UserNotFoundException, UserNotLoggedInException {
+    public ResponseEntity<TaskDTO> createTask(@PathVariable String token, @RequestBody @Valid Task task) throws UserNotFoundException, UserNotLoggedInException {
         return new ResponseEntity<TaskDTO>(taskService.createTask(token, task), HttpStatus.OK);
     }
 
     @PutMapping("/{token}")
-    public ResponseEntity<TaskDTO> updateTask(@PathVariable String token, @RequestBody Task updatedTask) throws TaskNotFoundException, UserNotLoggedInException, TaskException {
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable String token, @RequestBody @Valid Task updatedTask) throws TaskNotFoundException, UserNotLoggedInException, TaskException {
     	return new ResponseEntity<TaskDTO>(taskService.updateTask(token, updatedTask), HttpStatus.OK);
     }
     

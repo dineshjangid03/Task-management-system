@@ -20,6 +20,8 @@ import com.musterdekho.model.LoginDTO;
 import com.musterdekho.model.User;
 import com.musterdekho.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -33,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> registerUser(@RequestBody User user) throws UserException {
+    public ResponseEntity<UserDTO> registerUser(@RequestBody @Valid User user) throws UserException {
         return new ResponseEntity<UserDTO>(userService.addUser(user),HttpStatus.OK);
     }
 
