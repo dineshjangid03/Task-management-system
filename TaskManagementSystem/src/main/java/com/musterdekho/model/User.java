@@ -9,6 +9,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -18,13 +21,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @Size(min = 3, max = 30, message = "Name should be greater than 3 and less than 30 words")
     private String name;
     
+    @Size(min = 10, max = 10, message = "Mobile number must contain 10 digits")
     private String mobile;
 
     @Column(unique = true)
+    @NotNull
     private String username;
 
+    @Size(min = 4)
     private String password;
 
     @OneToMany(mappedBy = "assignedUser")

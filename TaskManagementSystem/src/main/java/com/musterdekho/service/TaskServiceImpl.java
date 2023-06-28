@@ -67,7 +67,7 @@ public class TaskServiceImpl implements TaskService{
 		Task savedTask = taskRepo.findById(updatedTask.getId())
 				.orElseThrow(() -> new TaskNotFoundException(updatedTask.getId()));
 		
-		if(savedTask.getAssignedUser().getId() != loggedInUser.getUserId())
+		if(savedTask.getAssignedUser().getId()+1 != loggedInUser.getUserId()+1)
 			throw new TaskException("This is not your task! you canno't update it");
 		
 		if(updatedTask.getDescription()!=null)
